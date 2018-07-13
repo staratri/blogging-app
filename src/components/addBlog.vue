@@ -1,7 +1,7 @@
 <template>
     <div id="add-blog">
         <h2>Add a New Blog Post</h2>
-        <form>
+        <form v-if="!submitted">
             <label>Blog Title:</label>
             <input type="text" v-model="blog.title" required />
             <label>Blog Content:</label>
@@ -21,8 +21,11 @@
             <select v-model="blog.author">
                 <option v-for="author in authors">{{ author }}</option>
             </select>
-            <button ></button>
+            <button @click.prevent="post">Add Blog</button>
         </form>
+        <div v-if="submitted">
+            <h3>Thanks for adding a post ! :)</h3>
+        </div>
         <div id="preview">
             <h3>Preview blog</h3>
             <p>Blog title: {{blog.title}}</p>
@@ -49,9 +52,18 @@ export default {
                 categories : [],
                 author : ''
             },
-            authors : ['satyam', 'shivam', 'ayush']
+            authors : ['satyam', 'shivam', 'ayush'],
+            submitted : false
         }
     },
+    methods : {
+        post : function(){
+            this.$http.post('https://blogapp-vue.firebaseio.com/posts.json', this.blog).then(function(data){
+                console.log(data.body)
+                this.submitted = true
+            })
+        }
+    }
 }
 </script>
 
